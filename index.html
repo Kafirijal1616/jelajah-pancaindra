@@ -681,13 +681,12 @@ var visitorTransportFrame = document.getElementById('visitor-transport');
 window.addEventListener('message', function(event) {
   var d = event.data;
 
-  var fromTransport = visitorTransportFrame &&
-    event.source === visitorTransportFrame.contentWindow;
-
+  // Terima hanya respons buku tamu untuk pengiriman yang sedang aktif.
   if (
-    (!fromTransport && !visitorMessageOriginAllowed(event.origin)) ||
     !d ||
-    d.type !== 'jelajahPancaindraVisitor' ||
+    d.type !== 'jelajahPancaIndraVisitor' &&
+      d.type !== 'jelajahPancaindraVisitor' ||
+    !visitorRequestId ||
     d.requestId !== visitorRequestId
   ) return;
    if(visitorRequestTimer){
