@@ -676,10 +676,24 @@ function visitorMessageOriginAllowed(origin){
   if(origin==='https://script.google.com')return true;
   try{return /(^|\.)googleusercontent\.com$/i.test(new URL(origin).hostname)}catch(e){return false}
 }
-window.addEventListener('message',function(event){
-  var d=event.data;
-  if(!visitorMessageOriginAllowed(event.origin)||!d||d.type!=='jelajahPancaindraVisitor'||d.requestId!==visitorRequestId)return;
-  if(visitorRequestTimer){clearTimeout(visitorRequestTimer);visitorRequestTimer=null;}
+var visitorTransportFrame = document.getElementById('visitor-transport');
+
+window.addEventListener('message', function(event) {
+  var d = event.data;
+
+  var fromTransport = visitorTransportFrame &&
+    event.source === visitorTransportFrame.contentWindow;
+
+  if (
+    (!fromTransport && !visitorMessageOriginAllowed(event.origin)) ||
+    !d ||
+    d.type !== 'jelajahPancaindraVisitor' ||
+    d.requestId !== visitorRequestId
+  ) return;
+   if(visitorRequestTimer){
+  clearTimeout(visitorRequestTimer);
+  visitorRequestTimer=null;
+}
   visitorRequestId=null;
   visitorSubmit.disabled=false;
   visitorSubmit.textContent='Kirim & Masuk Petualangan 🚀';
